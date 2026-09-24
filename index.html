@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#F6F7F9">
+<meta name="theme-color" content="#F5F6F2">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nested">
 <meta property="og:title" content="Nested — an infinite dictionary">
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#F6F7F9;--ink:#15171C;--ghost:#E2E6ED;--soft:#5B6270;--faint:#98A0AD;--line:#D8DDE5;--chip:#EBEEF3;--acc:#3355D1;--acc-ink:#2B47B5;--sub:#535A66;--nw:#3F4450;--ul:rgba(51,85,209,.55);--ul2:rgba(51,85,209,.3);--focusbg:rgba(51,85,209,.08);--kbd:#fff;--toast-hi:#9DB4FF;--solid-hover:#000;--shade:rgba(20,30,60,.35);--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
-:root[data-theme="dark"]{--paper:#0E1014;--ink:#E4E8EF;--ghost:#1B1F27;--soft:#8E97A6;--faint:#5A6270;--line:#2A2F39;--chip:#1A1E26;--acc:#7D9BFF;--acc-ink:#9DB4FF;--sub:#8E97A6;--nw:#C7CDD7;--ul:rgba(125,155,255,.6);--ul2:rgba(125,155,255,.35);--focusbg:rgba(125,155,255,.12);--kbd:#161920;--toast-hi:#2B47B5;--solid-hover:#fff;--shade:rgba(0,0,0,.6);color-scheme:dark}
+:root{--paper:#F5F6F2;--ink:#161A16;--ghost:#E1E5DC;--soft:#5A6358;--faint:#9AA296;--line:#D7DCD2;--chip:#E9ECE5;--acc:#2F7D5B;--acc-ink:#256B4C;--sub:#4F584E;--nw:#3C443B;--ul:rgba(47,125,91,.55);--ul2:rgba(47,125,91,.3);--focusbg:rgba(47,125,91,.08);--kbd:#fff;--toast-hi:#6FCF9F;--solid-hover:#000;--shade:rgba(20,40,28,.35);--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
+:root[data-theme="dark"]{--paper:#0F1311;--ink:#E3E8E3;--ghost:#1C221E;--soft:#8F9A91;--faint:#5A635C;--line:#29302B;--chip:#1A1F1C;--acc:#6FCF9F;--acc-ink:#8EDDB5;--sub:#8F9A91;--nw:#C6CEC7;--ul:rgba(111,207,159,.55);--ul2:rgba(111,207,159,.3);--focusbg:rgba(111,207,159,.12);--kbd:#151A17;--toast-hi:#236548;--solid-hover:#fff;--shade:rgba(0,0,0,.6);color-scheme:dark}
 /* switching themes: ease every colour for a moment, then get out of the way */
 .theming,.theming *{transition:background-color .5s ease,color .5s ease,border-color .5s ease,text-decoration-color .5s ease!important}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -125,7 +125,7 @@ abbr{text-decoration:none}
 
 /* help: a dictionary entry for the piece itself */
 .help{margin:auto;width:min(460px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);padding:28px 28px 24px;box-shadow:0 30px 80px -30px rgba(0,0,0,.45);user-select:text;-webkit-user-select:text}
-.help::backdrop{background:rgba(14,16,20,.35)}
+.help::backdrop{background:rgba(12,18,14,.35)}
 .help h2{font:400 34px/1 "EB Garamond",Georgia,serif}
 .help h2 .hw{font-variant:small-caps;letter-spacing:.04em}
 .help h2 .pos{font-style:italic;color:var(--soft);font-size:26px}
@@ -412,7 +412,7 @@ stage.addEventListener('focusin',e=>{const w=e.target.closest&&e.target.closest(
 // ---- night mode + sound controls ----
 const rootH=document.documentElement,themeBtn=$('themeBtn'),sndBtn=$('sndBtn'),metaTheme=document.querySelector('meta[name="theme-color"]');
 function setTheme(t,save,ease){if(ease&&!reduce){rootH.classList.add('theming');clearTimeout(setTheme.t);setTheme.t=setTimeout(()=>rootH.classList.remove('theming'),650)}
-  rootH.dataset.theme=t;themeBtn.setAttribute('aria-checked',t==='dark');metaTheme.content=t==='dark'?'#0E1014':'#F6F7F9';snd.night(t==='dark');
+  rootH.dataset.theme=t;themeBtn.setAttribute('aria-checked',t==='dark');metaTheme.content=t==='dark'?'#0F1311':'#F5F6F2';snd.night(t==='dark');
   if(save)try{localStorage.setItem('nested-theme',t)}catch(e){}}
 setTheme(rootH.dataset.theme,false,false);
 let chosen=false;
