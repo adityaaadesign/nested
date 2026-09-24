@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Nested — an infinite dictionary</title>
+<meta name="description" content="Zoom into any word to find its definition written inside it, and into any word of that definition, forever, until you notice you have been here before.">
+<!--seo-->
+<link rel="canonical" href="https://nested-dictionary.vercel.app/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#FBFAF7">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Nested">
+<meta property="og:title" content="Nested — an infinite dictionary">
+<meta property="og:description" content="Every word’s definition is printed inside it, forty times smaller. Zoom in until you loop.">
+<meta property="og:url" content="https://nested-dictionary.vercel.app/">
+<meta property="og:image" content="https://nested-dictionary.vercel.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Nested: the word “universe” in huge pale letters, with its definition printed small inside it.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Nested — an infinite dictionary">
+<meta name="twitter:description" content="Every word’s definition is printed inside it, forty times smaller. Zoom in until you loop.">
+<meta name="twitter:image" content="https://nested-dictionary.vercel.app/og.png">
+<!--/seo-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#FBFAF7;--ink:#141414;--ghost:#E7E3D8;--soft:#6A655A;--faint:#A39D8F;--line:#DDD8CB;--chip:#EFEBE1;--red:#D6452B;--red-ink:#B8391F;--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);overflow:hidden;font-family:Chivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit}
+abbr{text-decoration:none}
+:focus-visible{outline:2px solid var(--red-ink);outline-offset:3px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* the page: a camera over one very large word */
+#stage{position:fixed;inset:0;cursor:zoom-in;overflow:hidden;overflow:clip;contain:strict;touch-action:none}
+#stage.drag{cursor:grabbing}
+#world{position:absolute;left:0;top:0;transform-origin:0 0;opacity:0;transition:opacity .7s ease}
+.ready #world{opacity:1}
+.root{position:absolute;left:0;top:0;font-family:"EB Garamond",Georgia,serif;font-size:200px;line-height:1;white-space:nowrap;color:var(--ghost);letter-spacing:-.01em}
+.def{position:absolute;left:50%;top:50%;width:30em;transform:translate(-50%,-50%) scale(.025);transform-origin:50% 50%;font-family:"EB Garamond",Georgia,serif;white-space:normal;color:var(--ink);line-height:1.3;letter-spacing:0;text-align:left;font-size:1em}
+.def .hw{font-variant:small-caps;letter-spacing:.04em;font-weight:500}
+.def .pos{font-style:italic;color:var(--soft)}
+.w{position:relative;display:inline;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(214,69,43,.6);text-decoration-thickness:.05em;text-underline-offset:.14em;border-radius:.06em;transition:color .2s,background-color .2s}
+.w:hover{color:var(--red-ink)}
+.w:focus-visible{color:var(--red-ink);outline:.04em solid var(--red);outline-offset:.08em;background:rgba(214,69,43,.07)}
+.w .def{color:#5b574f;pointer-events:none}
+.w .def .w{text-decoration-color:rgba(214,69,43,.35)}
+.nw{color:#4a4740}
+
+/* chrome */
+.head{position:fixed;left:var(--pad);top:var(--top);pointer-events:none;z-index:5}
+.head h1{font-family:"EB Garamond",Georgia,serif;font-weight:400;font-style:italic;font-size:clamp(34px,4vw,56px);line-height:.9}
+.head p{font-size:13px;color:var(--soft);margin-top:10px;max-width:32ch;line-height:1.55}
+.chrome{position:fixed;top:var(--top);right:var(--pad);display:flex;gap:6px;z-index:8}
+.pill{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;font:400 13px Chivo,sans-serif;border-radius:999px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);text-decoration:none;cursor:pointer;touch-action:manipulation;transition:background .2s,color .2s}
+.pill:hover,.pill.solid{background:var(--ink);color:var(--paper)}
+.pill.solid:hover{background:#000}
+.pill.icon{width:36px;padding:0;font-size:15px}
+.stats{position:fixed;right:var(--pad);top:calc(var(--top) + 52px);z-index:5;text-align:right;font-size:12px;color:var(--soft);line-height:1.5;pointer-events:none}
+.stats b{font-family:"EB Garamond",Georgia,serif;font-size:34px;font-weight:400;color:var(--ink);display:block;line-height:1;font-variant-numeric:lining-nums}
+.stats .hit{color:var(--red-ink)}
+
+/* the dock: out, path, random */
+.dock{position:fixed;left:50%;bottom:var(--bot);transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:2px;max-width:calc(100vw - 24px);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:0 14px 34px -20px rgba(0,0,0,.4);touch-action:manipulation}
+.tool{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:0;border-radius:999px;background:none;font:400 13px Chivo,sans-serif;cursor:pointer;transition:background .2s,opacity .2s}
+.tool:hover{background:var(--chip)}
+.tool:disabled{opacity:.35;cursor:default;background:none}
+.tool svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.sep{flex:none;width:1px;height:20px;background:var(--line)}
+.path{min-width:0;overflow-x:auto;scrollbar-width:none;touch-action:pan-x}
+.path::-webkit-scrollbar{display:none}
+.path.over{-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px);mask-image:linear-gradient(90deg,transparent,#000 28px)}
+.path ol{display:flex;align-items:center;list-style:none}
+.path li{display:flex;align-items:center;flex:none}
+.path li+li::before{content:"›";color:var(--faint);font-size:12px;padding:0 1px}
+.path button{height:36px;padding:0 10px;border:0;border-radius:999px;background:none;font:400 13px Chivo,sans-serif;color:var(--soft);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
+.path button:hover{background:var(--chip);color:var(--ink)}
+.path button[aria-current]{color:var(--ink);font-weight:700}
+.path button.loop{color:var(--red-ink)}
+
+.coach{position:fixed;left:50%;bottom:calc(var(--bot) + 62px);transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--soft);white-space:nowrap;pointer-events:none;transition:opacity .6s,transform .6s var(--ease)}
+.coach::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.8s ease-in-out infinite}
+.coach .t{display:none}
+.moved .coach{opacity:0;transform:translate(-50%,8px)}
+@keyframes pulse{50%{transform:scale(1.6);opacity:.45}}
+
+.toast{position:fixed;left:50%;top:var(--top);transform:translate(-50%,-160%);opacity:0;z-index:9;width:max-content;max-width:min(560px,calc(100vw - 32px));background:var(--ink);color:var(--paper);font-size:14px;line-height:1.45;text-align:center;padding:11px 18px;border-radius:18px;pointer-events:none;transition:transform .6s var(--ease),opacity .4s}
+.toast.on{transform:translate(-50%,0);opacity:1}
+.toast b{color:#FF9A83;font-weight:700}
+
+/* help: a dictionary entry for the piece itself */
+.help{margin:auto;width:min(460px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);padding:28px 28px 24px;box-shadow:0 30px 80px -30px rgba(0,0,0,.45);user-select:text;-webkit-user-select:text}
+.help::backdrop{background:rgba(20,20,20,.3)}
+.help h2{font:400 34px/1 "EB Garamond",Georgia,serif}
+.help h2 .hw{font-variant:small-caps;letter-spacing:.04em}
+.help h2 .pos{font-style:italic;color:var(--soft);font-size:26px}
+.help .gloss{font:400 19px/1.4 "EB Garamond",Georgia,serif;margin:10px 0 20px}
+.help dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:13px;line-height:1.45;border-top:1px solid var(--line);padding-top:18px}
+.help dt{white-space:nowrap}
+.help dd{color:var(--soft)}
+.help kbd{font:700 11px Chivo,sans-serif;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:#fff}
+.help .note{font-size:13px;line-height:1.55;color:var(--soft);margin-top:18px}
+.help .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:22px}
+
+@media (max-width:700px){.def{width:17em}.head p{display:none}.toast{top:calc(var(--top) + 60px)}}
+@media (max-width:520px){.tool .lbl{display:none}.tool{padding:0 11px}.chrome{gap:4px}.pill{padding:0 12px;font-size:12px}.help{padding:22px 20px 20px}.help dl{grid-template-columns:1fr;gap:2px}.help dd{margin-bottom:8px}}
+@media (hover:none){.coach .m{display:none}.coach .t{display:inline}}
+@media (pointer:coarse){.pill,.tool,.path button{min-height:44px;height:44px}.pill.icon{width:44px}.stats{top:calc(var(--top) + 58px)}.coach{bottom:calc(var(--bot) + 70px)}}
+@media (prefers-reduced-motion:reduce){#world,.toast,.coach{transition:none}.coach::before{animation:none}}
+</style>
+</head>
+<body>
+<header class="head"><h1>Nested</h1><p>An infinite dictionary. Every word's definition is printed inside the word itself, in type too small to see. Keep going.</p></header>
+<nav class="chrome" aria-label="Help"><button class="pill icon" type="button" id="helpBtn" aria-haspopup="dialog" aria-label="How to explore" title="How to explore (?)">?</button></nav>
+<div class="stats"><b id="depth">0</b><span id="depthLbl">words deep</span><br><span id="loops">no loops yet</span></div>
+
+<main id="stage" aria-label="Dictionary" aria-describedby="how"><div id="world"></div></main>
+<p id="how" class="sr">Tab moves between underlined words; Enter opens one. Escape climbs back out. Press question mark for all controls.</p>
+<noscript><p style="position:fixed;inset:auto 16px 50% 16px;text-align:center;font:19px/1.5 'EB Garamond',serif">Nested needs JavaScript to zoom. It starts here: <i>universe</i>, n. everything that exists: all space and time, and the matter and energy inside them.</p></noscript>
+
+<p class="coach" aria-hidden="true"><span class="m">Click an underlined word, or scroll to zoom into it</span><span class="t">Tap an underlined word, or pinch to zoom</span></p>
+<div class="dock">
+  <button class="tool" type="button" id="out" disabled title="Climb out (Esc)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg><span class="lbl">Out</span><span class="sr"> one word</span></button>
+  <span class="sep" aria-hidden="true"></span>
+  <nav class="path" id="path" aria-label="Your path"><ol id="crumbs"></ol></nav>
+  <span class="sep" aria-hidden="true"></span>
+  <button class="tool" type="button" id="rand" title="Open a random word (R)"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4.5h2.5c3.5 0 3.5 7 7 7H14M2 11.5h2.5c1.4 0 2.2-1.1 2.9-2.4M9.1 6.9c.7-1.3 1.5-2.4 2.9-2.4H14M12 2.5l2 2-2 2M12 9.5l2 2-2 2"/></svg><span class="lbl">Random</span><span class="sr"> word</span></button>
+</div>
+<div class="toast" id="toast" aria-hidden="true"></div>
+<div class="sr" id="announce" aria-live="polite" aria-atomic="true"></div>
+
+<dialog class="help" id="help" aria-labelledby="helpTitle">
+  <h2 id="helpTitle"><span class="hw">nest·ed</span> <span class="pos">adj.</span></h2>
+  <p class="gloss">placed inside something of the same kind, like every word on this page, which holds its own definition in type too small to see.</p>
+  <dl>
+    <dt>Click or tap a word</dt><dd>fall into its definition</dd>
+    <dt>Scroll · pinch · <kbd>+</kbd> <kbd>−</kbd></dt><dd>zoom; go far enough into a word and you arrive</dd>
+    <dt>Drag · arrow keys</dt><dd>move around the page</dd>
+    <dt><kbd>Esc</kbd> · <kbd>⌫</kbd> · Out</dt><dd>climb back out one word</dd>
+    <dt><kbd>Tab</kbd> then <kbd>Enter</kbd></dt><dd>step between words and open one</dd>
+    <dt><kbd>R</kbd> · <kbd>H</kbd></dt><dd>a random word · back to “universe”</dd>
+  </dl>
+  <p class="note">Every definition is written with words from the same book, so sooner or later you land on a word already on your path. That’s a loop, and it turns red.</p>
+  <div class="acts"><button class="pill" type="button" id="homeBtn">Start at “universe”</button><button class="pill solid" type="button" id="helpClose" autofocus>Keep reading</button></div>
+</dialog>
+
+<script>
+(()=>{
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=id=>document.getElementById(id);
+const D={
+universe:['n.','everything that exists: all space and time, and the matter and energy inside them.'],
+everything:['pron.','all things, taken together, including this one.'],
+all:['adj.','every part of something, with nothing left outside.'],
+exists:['v.','is real; takes up space or time, or both.'],
+space:['n.','the room between things, where everything is, stretching outside every edge.'],
+time:['n.','what keeps everything from happening at once; the distance between a beginning and an end.'],
+matter:['n.','anything that has weight and takes up space; stuff.'],
+energy:['n.','the ability to change things; light and heat are two of its names.'],
+light:['n.','energy you can see, travelling faster than anything through space.'],
+heat:['n.','energy moving from a warm thing into a cold one.'],
+thing:['n.','anything you can think of, point to, or name.'],
+name:['n.','a word you give a thing so that you can find it again.'],
+word:['n.','a small sound or mark that carries a meaning from one mind to another.'],
+meaning:['n.','what a word points to; the idea behind the sound.'],
+idea:['n.','a thing that exists only inside a mind, until someone writes it down with ink.'],
+mind:['n.','the part of you that is reading this word, right now.'],
+you:['pron.','the reader; the one holding the other end of this sentence.'],
+reading:['v.','turning marks on a page into sound and meaning inside your mind.'],
+page:['n.','one side of a leaf of paper, holding words.'],
+paper:['n.','thin sheets made from trees, for holding ink.'],
+ink:['n.','dark water that turns an idea into marks on paper.'],
+tree:['n.','a tall, slow thing that turns light and water into wood, and one day paper.'],
+water:['n.','the clear matter that fills the sea and most of every living cell.'],
+sea:['n.','a great deal of water, moving, around the edges of the earth.'],
+earth:['n.','the world we live on: a ball of rock and water turning in space.'],
+world:['n.','the earth, and everything and everyone on it.'],
+life:['n.','what matter does when it starts to copy itself and grow.'],
+cell:['n.','the smallest thing that is alive; a tiny room with water inside.'],
+small:['adj.','taking up little space; seen best by zooming in.'],
+large:['adj.','taking up a lot of space; seen best by zooming out.'],
+inside:['prep.','in the space enclosed by something, like this word inside that one.'],
+outside:['prep.','beyond the edges of something; where you came from.'],
+zoom:['v.','to move closer and closer until a small thing becomes large.'],
+dictionary:['n.','a book of words, each explained using other words from the same book.'],
+definition:['n.','a group of words that explains what one word means.'],
+book:['n.','many pages bound together, holding a story or a dictionary.'],
+story:['n.','things that happened, or might have, told in order from beginning to end.'],
+beginning:['n.','the point where something starts; the first page.'],
+end:['n.','the point where something stops; the last word.'],
+circle:['n.','a line that ends where it began.'],
+loop:['n.','a path that brings you back to the beginning, like this dictionary.'],
+nothing:['pron.','no thing at all; the space where everything is not.'],
+silence:['n.','the sound of nothing; the time between words.'],
+sound:['n.','energy moving through air, which the mind hears as noise or words.'],
+air:['n.','the matter you cannot see but breathe; it carries sound and light.'],
+noise:['n.','sound without meaning.'],
+star:['n.','a large ball of fire in space, making light and heat for billions of years.'],
+fire:['n.','light and heat released when matter burns.'],
+sun:['n.','the star nearest to the earth, which makes the day.'],
+day:['n.','the time when the sun is in the sky.'],
+night:['n.','the time when the earth turns you away from the sun.'],
+sky:['n.','the space above the earth, blue by day and dark by night.'],
+dream:['n.','a story the mind tells itself inside sleep.'],
+sleep:['n.','the time each night when the mind rests and the dream begins.'],
+now:['adv.','this moment, which is already becoming the past.'],
+moment:['n.','a very small piece of time.'],
+past:['n.','all the time that has already happened.'],
+future:['n.','all the time that has not happened yet.'],
+human:['n.','a kind of life that uses words to share ideas; you, probably.'],
+language:['n.','all the words a group of humans share, and the rules for joining them.'],
+letter:['n.','one of the small marks that words are made from.'],
+echo:['n.','a sound that comes back to you, like a word you have read before.'],
+rock:['n.','hard matter that the earth is made of.'],
+ball:['n.','a round thing; a circle made solid.'],
+weight:['n.','how hard matter is pulled toward the earth.'],
+mark:['n.','a small sign left on paper, like a letter.'],
+edge:['n.','the line where the inside of a thing ends and the outside begins.'],
+sentence:['n.','words in a line, carrying one idea from beginning to end.'],
+wood:['n.','the hard matter inside a tree, which becomes paper.'],
+line:['n.','a mark that goes from one point to another; the edge of a circle.']};
+const POS={'n.':'noun','v.':'verb','adj.':'adjective','adv.':'adverb','pron.':'pronoun','prep.':'preposition'};
+function lookup(w){w=w.toLowerCase().replace(/[’']s$/,'');if(D[w])return w;if(w.endsWith('ies')&&D[w.slice(0,-3)+'y'])return w.slice(0,-3)+'y';if(w.endsWith('es')&&D[w.slice(0,-2)])return w.slice(0,-2);if(w.endsWith('s')&&D[w.slice(0,-1)])return w.slice(0,-1);if(w.endsWith('ing')&&D[w.slice(0,-3)])return w.slice(0,-3);const irr={trees:'tree',humans:'human',words:'word',ideas:'idea',stars:'star',everyone:null,living:'life',alive:'life',lives:'life',read:'reading',zooming:'zoom',writes:'word',mind:'mind'};if(w in irr)return irr[w];return null}
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+// build a definition block; depth 0 = directly inside the root, 1 = inside those words
+function defHTML(word,depth){const [pos,text]=D[word];let h=`<span class="hw">${esc(word)}</span> <abbr class="pos" title="${POS[pos]}">${pos}</abbr> `;
+  h+=text.split(/(\s+)/).map(tok=>{if(/^\s+$/.test(tok))return tok;const m=tok.match(/^([^A-Za-z’']*)([A-Za-z’']+)(.*)$/);if(!m)return esc(tok);const hit=lookup(m[2]);
+    if(!hit)return esc(m[1])+`<span class="nw">${esc(m[2])}</span>`+esc(m[3]);
+    return esc(m[1])+`<span class="w" data-word="${hit}"${depth===0?' tabindex="0" role="link"':''}>${esc(m[2])}${depth===0?`<span class="def" aria-hidden="true">${defHTML(hit,1)}</span>`:''}</span>`+esc(m[3])}).join('');
+  return h}
+const world=$('world'),stage=$('stage');let rootEl=null;
+let cam={x:0,y:0,s:1};
+function apply(){world.style.transform=`translate(${cam.x}px,${cam.y}px) scale(${cam.s})`}
+function build(word){world.innerHTML=`<div class="root" data-word="${word}"><span aria-hidden="true">${esc(word)}</span><div class="def">${defHTML(word,0)}</div></div>`;rootEl=world.firstChild}
+const defEl=()=>rootEl.querySelector(':scope > .def');
+// place `el` so its screen box matches `r` (by height and centre)
+function matchRect(el,r){cam={x:0,y:0,s:1};apply();const w=el.getBoundingClientRect();const s=r.height/w.height;cam={s,x:(r.left+r.width/2)-s*(w.left+w.width/2),y:(r.top+r.height/2)-s*(w.top+w.height/2)};apply()}
+function fitRoot(frac=.72){cam={x:0,y:0,s:1};apply();const w=rootEl.getBoundingClientRect();const s=Math.min(innerWidth*frac/w.width,innerHeight*.5/w.height);cam={s,x:innerWidth/2-s*(w.left+w.width/2),y:innerHeight/2-s*(w.top+w.height/2)};apply()}
+// reading width: aim for 20–30px type, never wider than 90% of the screen
+const DF=()=>Math.min(.9,(innerWidth<=700?17:30)*Math.min(30,Math.max(20,innerWidth/26))/innerWidth);
+function fitDef(){const r=defEl().getBoundingClientRect();const f=Math.min(innerWidth*DF()/r.width,innerHeight*.6/r.height);const cx=r.left+r.width/2,cy=r.top+r.height/2;cam.x=innerWidth/2-(cx-cam.x)*f;cam.y=innerHeight/2-(cy-cam.y)*f;cam.s*=f;apply()}
+
+// ---- path, loops, announcements ----
+let path=['universe'],loops=0,kbd=false,started=false;
+const live=$('announce');
+function say(t){live.textContent='';setTimeout(()=>{live.textContent=t},60)}
+function crumbs(){const c=$('crumbs'),nav=$('path');
+  c.innerHTML=path.map((w,i)=>{const last=i===path.length-1,loop=path.indexOf(w)<i;return `<li><button type="button" data-i="${i}"${last?' aria-current="location" title="Recenter"':''}${loop?' class="loop"':''}>${loop?'<span aria-hidden="true">↺ </span><span class="sr">loop: </span>':''}${esc(w)}</button></li>`}).join('');
+  c.querySelectorAll('button').forEach(b=>b.onclick=()=>climbTo(+b.dataset.i));
+  nav.scrollLeft=nav.scrollWidth;nav.classList.toggle('over',nav.scrollWidth>nav.clientWidth+1);
+  const d=path.length-1;$('depth').textContent=d;$('depthLbl').textContent=d===1?'word deep':'words deep';
+  const l=$('loops');l.textContent=loops?loops+(loops===1?' loop':' loops')+' found':'no loops yet';l.classList.toggle('hit',loops>0);
+  $('out').disabled=path.length<2}
+// after the page changes: update the trail, read the new entry aloud, keep keyboard focus on the page
+function settle(pre){crumbs();const w=path[path.length-1],[p,t]=D[w];say(`${pre?pre+' ':''}${w}, ${POS[p]}: ${t}`);
+  if(kbd&&(!document.activeElement||document.activeElement===document.body)){const f=rootEl.querySelector(':scope > .def > .w');if(f)f.focus({preventScroll:true})}}
+let toastT;function toast(h){const t=$('toast');t.innerHTML=h;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3600)}
+function dive(span){const word=span.dataset.word;const r=span.getBoundingClientRect();const prev=path.indexOf(word);path.push(word);build(word);matchRect(rootEl,r);
+  if(prev>=0){loops++;const n=path.length-1-prev;toast(`↺ <b>${esc(word)}</b> again: a loop, ${n} words long. Every dictionary is a circle.`);settle(`Loop found: ${word} again, ${n} words long.`)}else settle()}
+let block=null;
+function climb(){if(path.length<2)return false;const child=path.pop();block=child;const r=rootEl.getBoundingClientRect();build(path[path.length-1]);const sp=rootEl.querySelector(`.def > .w[data-word="${child}"]`)||rootEl.querySelector(`.w[data-word="${child}"]`);if(sp)matchRect(sp,r);else fitRoot();settle();return true}
+function out(){flight=null;moved();if(climb())flightTo(defEl(),DF(),false)}
+function climbTo(i){flight=null;moved();path=path.slice(0,i+1);build(path[i]);fitRoot();flightTo(defEl(),DF(),false);settle()}
+function jump(word){flight=null;moved();path=[word];build(word);fitRoot();flightTo(defEl(),DF(),false);settle()}
+function random(){const cur=path[path.length-1],k=Object.keys(D).filter(w=>w!==cur);jump(k[Math.random()*k.length|0])}
+function moved(){started=true;document.body.classList.add('moved')}
+
+// ---- camera: zoom about a point, pan, re-root as you cross levels ----
+function zoomAt(px,py,f){const cap=innerHeight*.5/(200*.025);if(f>1&&cam.s*f>cap){f=Math.max(1,cap/cam.s)}cam.x=px-(px-cam.x)*f;cam.y=py-(py-cam.y)*f;cam.s*=f;apply();check(px,py,f)}
+function check(px,py,f){const vh=innerHeight,vw=innerWidth;const only=flight&&flight.diveIn?flight.el:null;
+  // deeper: a first-level word has grown big enough to become the page
+  const spans=f>1?(only?[only]:[...rootEl.querySelectorAll(':scope > .def > .w')]):[];let best=null,ba=0;
+  for(const s of spans){const r=s.getBoundingClientRect();if(block&&s.dataset.word===block){if(r.height<vh*.2)block=null;else continue}if(r.height<vh*.3)continue;const inside=px>=r.left&&px<=r.right&&py>=r.top&&py<=r.bottom;const a=r.width*r.height*(inside?4:1);if(a>ba){ba=a;best=s}}
+  if(best){dive(best);return}
+  // shallower: the whole root has shrunk to a speck
+  const rr=rootEl.getBoundingClientRect();if(f<1&&rr.width<vw*.16&&path.length>1)climb();
+  // don't lose the root entirely at the top level
+  if(path.length===1&&rr.width<vw*.12){fitRoot()}}
+stage.addEventListener('wheel',e=>{e.preventDefault();flight=null;moved();const dy=e.deltaY*(e.deltaMode===1?16:e.deltaMode===2?innerHeight:1);zoomAt(e.clientX,e.clientY,Math.min(2,Math.max(.5,Math.exp(-dy*(e.ctrlKey?.01:.0016)))))},{passive:false});
+// focusing a word can make the browser scroll the stage; the camera owns the view, so undo it
+stage.addEventListener('scroll',()=>{stage.scrollTop=0;stage.scrollLeft=0});
+const pts=new Map();let downAt=null,pinch0=null,drag=0;
+stage.addEventListener('pointerdown',e=>{try{stage.setPointerCapture(e.pointerId)}catch(_){}pts.set(e.pointerId,{x:e.clientX,y:e.clientY});downAt={x:e.clientX,y:e.clientY,t:e.target};drag=0;flight=null;if(pts.size===2){const [a,b]=[...pts.values()];pinch0={d:Math.hypot(a.x-b.x,a.y-b.y)}}});
+stage.addEventListener('pointermove',e=>{if(!pts.has(e.pointerId))return;const p=pts.get(e.pointerId);const dx=e.clientX-p.x,dy=e.clientY-p.y;drag+=Math.abs(dx)+Math.abs(dy);p.x=e.clientX;p.y=e.clientY;
+  if(pts.size===2&&pinch0){const [a,b]=[...pts.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);moved();zoomAt((a.x+b.x)/2,(a.y+b.y)/2,d/pinch0.d);pinch0.d=d}
+  else if(pts.size===1&&drag>6){stage.classList.add('drag');moved();cam.x+=dx;cam.y+=dy;apply()}});
+function up(e){pts.delete(e.pointerId);if(pts.size<2)pinch0=null;stage.classList.remove('drag');
+  if(downAt&&drag<6&&pts.size===0){const w=downAt.t.closest&&downAt.t.closest('.w');moved();if(w&&w.closest('.root')===rootEl){if(!w.closest('.def .def'))flightTo(w,.7,true)}else{zoomAt(downAt.x,downAt.y,1.5)}}downAt=null}
+stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
+
+// ---- flight: glide toward a target element, diving through it; the frame loop only runs while flying ----
+let flight=null,raf=0;
+function kick(){if(!raf)raf=requestAnimationFrame(step)}
+function flightTo(el,frac,diveIn){if(!el)return;if(reduce){if(diveIn&&el.classList.contains('w'))dive(el);fitDef();return}flight={el,frac,diveIn,n:0};kick()}
+function step(){raf=0;if(!flight)return;const {el}=flight;if(!el.isConnected||++flight.n>600){flight=null;return}
+  const r=el.getBoundingClientRect();const tw=innerWidth*flight.frac;const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  // diving aims past the re-root threshold by height, so long words on narrow screens still open
+  const k=Math.pow(flight.diveIn?innerHeight*.42/r.height:Math.min(tw/r.width,innerHeight*.62/r.height),.09);cam.x+=(innerWidth/2-cx)*.1;cam.y+=(innerHeight/2-cy)*.1;apply();const was=rootEl;zoomAt(innerWidth/2,innerHeight/2,k);
+  if(!flight)return;
+  if(rootEl!==was&&flight.diveIn){flight={el:defEl(),frac:DF(),diveIn:false,n:0}}
+  else if(Math.abs(k-1)<.002&&Math.hypot(innerWidth/2-cx,innerHeight/2-cy)<2){flight=null}
+  if(flight)kick()}
+
+// ---- keyboard ----
+const help=$('help');
+addEventListener('pointerdown',()=>{kbd=false},true);
+addEventListener('keydown',e=>{kbd=true;if(help.open||e.ctrlKey||e.metaKey||e.altKey)return;const k=e.key,t=e.target,onWord=t.classList&&t.classList.contains('w');
+  if(k==='+'||k==='='){flight=null;moved();zoomAt(innerWidth/2,innerHeight/2,1.25)}
+  else if(k==='-'||k==='_'){flight=null;moved();zoomAt(innerWidth/2,innerHeight/2,.8)}
+  else if(k==='Escape'||k==='Backspace'){e.preventDefault();out()}
+  else if(k==='Enter'&&onWord){e.preventDefault();moved();flightTo(t,.7,true)}
+  else if(k==='h'||k==='H')jump('universe');
+  else if(k==='r'||k==='R')random();
+  else if(k==='?'){e.preventDefault();help.showModal()}
+  else if(k.startsWith('Arrow')&&!t.closest('.dock')){e.preventDefault();flight=null;moved();const d=60;if(k==='ArrowLeft')cam.x+=d;if(k==='ArrowRight')cam.x-=d;if(k==='ArrowUp')cam.y+=d;if(k==='ArrowDown')cam.y-=d;apply()}});
+// tabbing to a word that is too small to read, or off screen, brings the definition back into view
+stage.addEventListener('focusin',e=>{const w=e.target.closest&&e.target.closest('.w');if(!w||flight)return;const r=w.getBoundingClientRect();
+  if(r.height<18||r.right<0||r.left>innerWidth||r.bottom<0||r.top>innerHeight)flightTo(defEl(),DF(),false)});
+
+// ---- dock + help ----
+$('out').onclick=out;$('rand').onclick=random;
+$('helpBtn').onclick=()=>help.showModal();$('helpClose').onclick=()=>help.close();
+$('homeBtn').onclick=()=>{help.close();jump('universe')};
+help.addEventListener('click',e=>{const r=help.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)help.close()});
+
+// ---- opening: the word, then a slow fall toward its tiny definition ----
+build('universe');crumbs();fitRoot(.8);
+const fontsReady=document.fonts?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,2500))]):Promise.resolve();
+fontsReady.then(()=>{if(!started)fitRoot(.8);document.body.classList.add('ready');
+  if(reduce){started=true;fitDef()}else setTimeout(()=>{if(!started){started=true;flightTo(defEl(),DF(),false)}},900)});
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(()=>{flight=null;if(started)fitDef();else fitRoot(.8);crumbs()},120)});
+})();
+</script>
+</body>
+</html>
