@@ -8,4 +8,8 @@ Mechanics: the DOM holds two levels. The root has a .def at scale(0.025), and ea
 
 Interaction: click a word to glide into it; the flight carries through the re-root until the new definition is readable. Esc climbs out, Tab + Enter dives, breadcrumbs jump back, and a "?" dialog lists the controls. Announce entries to screen readers.
 
-Signature moment: reaching a word already on your path shows "↺ all again: a loop, 3 words long. Every dictionary is a circle." and turns the crumb red. It stands alone: the only top-right control is a "?" pill.
+Signature moment: reaching a word already on your path shows "↺ all again: a loop, 3 words long. Every dictionary is a circle." and turns the crumb red. It stands alone: top right holds only a sound toggle, "?" and, in the corner, a night-mode toggle.
+
+Night mode: warm near-black paper #131211, ink #ECE6DA, ghost #24221E, coral #E0674D; follows the system until chosen, then remembered.
+
+Sound, all Web Audio and very quiet: brown-noise room tone, a breathing low fifth (A2 + E3), a paper rustle and soft note on each dive, one pentatonic step lower per level and wrapping round, and a rising three-note chord when a loop closes. Starts on the first gesture; M mutes.

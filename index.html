@@ -25,11 +25,15 @@
 <meta name="twitter:description" content="Every word’s definition is printed inside it, forty times smaller. Zoom in until you loop.">
 <meta name="twitter:image" content="https://nested-dictionary.vercel.app/og.png">
 <!--/seo-->
+<script>try{var t=localStorage.getItem('nested-theme')}catch(e){}document.documentElement.dataset.theme=t||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#FBFAF7;--ink:#141414;--ghost:#E7E3D8;--soft:#6A655A;--faint:#A39D8F;--line:#DDD8CB;--chip:#EFEBE1;--red:#D6452B;--red-ink:#B8391F;--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
+:root{--paper:#FBFAF7;--ink:#141414;--ghost:#E7E3D8;--soft:#6A655A;--faint:#A39D8F;--line:#DDD8CB;--chip:#EFEBE1;--red:#D6452B;--red-ink:#B8391F;--sub:#5b574f;--nw:#4a4740;--ul:rgba(214,69,43,.6);--ul2:rgba(214,69,43,.35);--focusbg:rgba(214,69,43,.07);--kbd:#fff;--toast-hi:#FF9A83;--solid-hover:#000;--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
+:root[data-theme="dark"]{--paper:#131211;--ink:#ECE6DA;--ghost:#24221E;--soft:#9A9486;--faint:#6A655A;--line:#34312C;--chip:#23211E;--red:#E0674D;--red-ink:#F0836A;--sub:#9A9486;--nw:#D4CEC1;--ul:rgba(224,103,77,.7);--ul2:rgba(224,103,77,.4);--focusbg:rgba(240,131,106,.1);--kbd:#1C1B19;--toast-hi:#B8391F;--solid-hover:#fff;color-scheme:dark}
+/* switching themes: ease every colour for a moment, then get out of the way */
+.theming,.theming *{transition:background-color .5s ease,color .5s ease,border-color .5s ease,text-decoration-color .5s ease!important}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--paper);color:var(--ink);overflow:hidden;font-family:Chivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
@@ -47,12 +51,12 @@ abbr{text-decoration:none}
 .def{position:absolute;left:50%;top:50%;width:30em;transform:translate(-50%,-50%) scale(.025);transform-origin:50% 50%;font-family:"EB Garamond",Georgia,serif;white-space:normal;color:var(--ink);line-height:1.3;letter-spacing:0;text-align:left;font-size:1em}
 .def .hw{font-variant:small-caps;letter-spacing:.04em;font-weight:500}
 .def .pos{font-style:italic;color:var(--soft)}
-.w{position:relative;display:inline;cursor:pointer;text-decoration:underline;text-decoration-color:rgba(214,69,43,.6);text-decoration-thickness:.05em;text-underline-offset:.14em;border-radius:.06em;transition:color .2s,background-color .2s}
+.w{position:relative;display:inline;cursor:pointer;text-decoration:underline;text-decoration-color:var(--ul);text-decoration-thickness:.05em;text-underline-offset:.14em;border-radius:.06em;transition:color .2s,background-color .2s}
 .w:hover{color:var(--red-ink)}
-.w:focus-visible{color:var(--red-ink);outline:.04em solid var(--red);outline-offset:.08em;background:rgba(214,69,43,.07)}
-.w .def{color:#5b574f;pointer-events:none}
-.w .def .w{text-decoration-color:rgba(214,69,43,.35)}
-.nw{color:#4a4740}
+.w:focus-visible{color:var(--red-ink);outline:.04em solid var(--red);outline-offset:.08em;background:var(--focusbg)}
+.w .def{color:var(--sub);pointer-events:none}
+.w .def .w{text-decoration-color:var(--ul2)}
+.nw{color:var(--nw)}
 
 /* chrome */
 .head{position:fixed;left:var(--pad);top:var(--top);pointer-events:none;z-index:5}
@@ -61,8 +65,11 @@ abbr{text-decoration:none}
 .chrome{position:fixed;top:var(--top);right:var(--pad);display:flex;gap:6px;z-index:8}
 .pill{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;font:400 13px Chivo,sans-serif;border-radius:999px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);text-decoration:none;cursor:pointer;touch-action:manipulation;transition:background .2s,color .2s}
 .pill:hover,.pill.solid{background:var(--ink);color:var(--paper)}
-.pill.solid:hover{background:#000}
+.pill.solid:hover{background:var(--solid-hover)}
 .pill.icon{width:36px;padding:0;font-size:15px}
+.pill svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ic-sun,[data-theme="dark"] .ic-moon,.snd[aria-pressed="false"] .ic-on,.snd .ic-off{display:none}
+[data-theme="dark"] .ic-sun,.snd[aria-pressed="false"] .ic-off{display:block}
 .stats{position:fixed;right:var(--pad);top:calc(var(--top) + 52px);z-index:5;text-align:right;font-size:12px;color:var(--soft);line-height:1.5;pointer-events:none}
 .stats b{font-family:"EB Garamond",Georgia,serif;font-size:34px;font-weight:400;color:var(--ink);display:block;line-height:1;font-variant-numeric:lining-nums}
 .stats .hit{color:var(--red-ink)}
@@ -93,7 +100,7 @@ abbr{text-decoration:none}
 
 .toast{position:fixed;left:50%;top:var(--top);transform:translate(-50%,-160%);opacity:0;z-index:9;width:max-content;max-width:min(560px,calc(100vw - 32px));background:var(--ink);color:var(--paper);font-size:14px;line-height:1.45;text-align:center;padding:11px 18px;border-radius:18px;pointer-events:none;transition:transform .6s var(--ease),opacity .4s}
 .toast.on{transform:translate(-50%,0);opacity:1}
-.toast b{color:#FF9A83;font-weight:700}
+.toast b{color:var(--toast-hi);font-weight:700}
 
 /* help: a dictionary entry for the piece itself */
 .help{margin:auto;width:min(460px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);padding:28px 28px 24px;box-shadow:0 30px 80px -30px rgba(0,0,0,.45);user-select:text;-webkit-user-select:text}
@@ -105,7 +112,7 @@ abbr{text-decoration:none}
 .help dl{display:grid;grid-template-columns:auto 1fr;gap:10px 16px;font-size:13px;line-height:1.45;border-top:1px solid var(--line);padding-top:18px}
 .help dt{white-space:nowrap}
 .help dd{color:var(--soft)}
-.help kbd{font:700 11px Chivo,sans-serif;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:#fff}
+.help kbd{font:700 11px Chivo,sans-serif;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:1px 6px;background:var(--kbd)}
 .help .note{font-size:13px;line-height:1.55;color:var(--soft);margin-top:18px}
 .help .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:22px}
 
@@ -118,7 +125,11 @@ abbr{text-decoration:none}
 </head>
 <body>
 <header class="head"><h1>Nested</h1><p>An infinite dictionary. Every word's definition is printed inside the word itself, in type too small to see. Keep going.</p></header>
-<nav class="chrome" aria-label="Help"><button class="pill icon" type="button" id="helpBtn" aria-haspopup="dialog" aria-label="How to explore" title="How to explore (?)">?</button></nav>
+<nav class="chrome" aria-label="Settings">
+  <button class="pill icon snd" type="button" id="sndBtn" aria-pressed="true" aria-label="Sound" title="Sound on/off (M)"><svg class="ic-on" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 7v4h3l4 3V4L6 7H3zM12.5 6.5a3.5 3.5 0 0 1 0 5M14.5 4.5a6.4 6.4 0 0 1 0 9"/></svg><svg class="ic-off" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 7v4h3l4 3V4L6 7H3zM12.5 7l4 4M16.5 7l-4 4"/></svg></button>
+  <button class="pill icon" type="button" id="helpBtn" aria-haspopup="dialog" aria-label="How to explore" title="How to explore (?)">?</button>
+  <button class="pill icon" type="button" id="themeBtn" aria-pressed="false" aria-label="Night mode" title="Night mode (N)"><svg class="ic-moon" viewBox="0 0 18 18" aria-hidden="true"><path d="M14.5 11.2A6 6 0 0 1 6.8 3.5a6 6 0 1 0 7.7 7.7z"/></svg><svg class="ic-sun" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M9 1.8v1.6M9 14.6v1.6M1.8 9h1.6M14.6 9h1.6M3.9 3.9 5 5M13 13l1.1 1.1M3.9 14.1 5 13M13 5l1.1-1.1"/></svg></button>
+</nav>
 <div class="stats"><b id="depth">0</b><span id="depthLbl">words deep</span><br><span id="loops">no loops yet</span></div>
 
 <main id="stage" aria-label="Dictionary" aria-describedby="how"><div id="world"></div></main>
@@ -146,6 +157,7 @@ abbr{text-decoration:none}
     <dt><kbd>Esc</kbd> · <kbd>⌫</kbd> · Out</dt><dd>climb back out one word</dd>
     <dt><kbd>Tab</kbd> then <kbd>Enter</kbd></dt><dd>step between words and open one</dd>
     <dt><kbd>R</kbd> · <kbd>H</kbd></dt><dd>a random word · back to “universe”</dd>
+    <dt><kbd>N</kbd> · <kbd>M</kbd></dt><dd>night mode · sound on or off</dd>
   </dl>
   <p class="note">Every definition is written with words from the same book, so sooner or later you land on a word already on your path. That’s a loop, and it turns red.</p>
   <div class="acts"><button class="pill" type="button" id="homeBtn">Start at “universe”</button><button class="pill solid" type="button" id="helpClose" autofocus>Keep reading</button></div>
@@ -247,6 +259,46 @@ function fitRoot(frac=.72){cam={x:0,y:0,s:1};apply();const w=rootEl.getBoundingC
 const DF=()=>Math.min(.9,(innerWidth<=700?17:30)*Math.min(30,Math.max(20,innerWidth/26))/innerWidth);
 function fitDef(){const r=defEl().getBoundingClientRect();const f=Math.min(innerWidth*DF()/r.width,innerHeight*.6/r.height);const cx=r.left+r.width/2,cy=r.top+r.height/2;cam.x=innerWidth/2-(cx-cam.x)*f;cam.y=innerHeight/2-(cy-cam.y)*f;cam.s*=f;apply()}
 
+// ---- sound: quiet room tone, a slow breathing fifth, and a soft note for every page you turn ----
+const snd=(()=>{const AC=window.AudioContext||window.webkitAudioContext;
+  let on=true;try{on=localStorage.getItem('nested-sound')!=='off'}catch(e){}
+  if(!AC)return {ok:false,on:false,start(){},set(){},live(){return false},dive(){},climb(){},loop(){},night(){},pause(){},resume(){}};
+  let ctx=null,master,wet,white,bedLP,padLP,dark=false,sleepT;
+  // falling through the book: each level down is one step lower on a pentatonic scale, and it wraps around like the dictionary does
+  const SCALE=[880,783.99,659.25,587.33,523.25,440,392,329.63,293.66,261.63,220];
+  const pitch=d=>SCALE[((d%SCALE.length)+SCALE.length)%SCALE.length];
+  function noise(sec,brown){const n=ctx.sampleRate*sec|0,b=ctx.createBuffer(2,n,ctx.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);let last=0;for(let i=0;i<n;i++){const w=Math.random()*2-1;if(brown){last=(last+.02*w)/1.02;d[i]=last*3.5}else d[i]=w}}return b}
+  function impulse(sec){const n=ctx.sampleRate*sec|0,b=ctx.createBuffer(2,n,ctx.sampleRate);for(let c=0;c<2;c++){const d=b.getChannelData(c);for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3)}return b}
+  function init(){ctx=new AC();master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
+    const verb=ctx.createConvolver();verb.buffer=impulse(3);wet=ctx.createGain();wet.gain.value=.5;wet.connect(verb);verb.connect(master);
+    white=noise(2,false);
+    // room tone: brown noise under a low-pass, like the air in a reading room
+    const bed=ctx.createBufferSource();bed.buffer=noise(6,true);bed.loop=true;bedLP=ctx.createBiquadFilter();bedLP.type='lowpass';bedLP.frequency.value=420;const bg=ctx.createGain();bg.gain.value=.05;bed.connect(bedLP).connect(bg).connect(master);bed.start();
+    // a low fifth (A2 + E3), barely there, breathing once every twenty seconds
+    padLP=ctx.createBiquadFilter();padLP.type='lowpass';padLP.frequency.value=700;const pad=ctx.createGain();pad.gain.value=.018;padLP.connect(pad);pad.connect(master);pad.connect(wet);
+    for(const [f,dt,v] of [[110,-4,.5],[110,4,.5],[164.81,0,.45],[220,3,.2]]){const o=ctx.createOscillator(),g=ctx.createGain();o.type=f>200?'triangle':'sine';o.frequency.value=f;o.detune.value=dt;g.gain.value=v;o.connect(g).connect(padLP);o.start()}
+    const lfo=ctx.createOscillator(),lg=ctx.createGain();lfo.frequency.value=.05;lg.gain.value=.008;lfo.connect(lg).connect(pad.gain);lfo.start();
+    night(dark)}
+  function note(f,t,vol,dur){const o=ctx.createOscillator(),o2=ctx.createOscillator(),g=ctx.createGain(),g2=ctx.createGain(),lp=ctx.createBiquadFilter();
+    o.frequency.value=f;o2.frequency.value=f*2.01;g2.gain.value=.15;lp.type='lowpass';lp.frequency.value=dark?1600:2400;
+    o.connect(g);o2.connect(g2).connect(g);g.connect(lp);lp.connect(master);lp.connect(wet);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.start(t);o2.start(t);o.stop(t+dur+.05);o2.stop(t+dur+.05)}
+  // a page turning: a short burst of noise swept downward through a band-pass
+  function rustle(t,vol){const s=ctx.createBufferSource(),bp=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=white;bp.type='bandpass';bp.Q.value=.8;
+    bp.frequency.setValueAtTime(2200,t);bp.frequency.exponentialRampToValueAtTime(650,t+.35);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+.45);
+    s.connect(bp).connect(g);g.connect(master);g.connect(wet);s.start(t,Math.random()*1.4,.5)}
+  function night(d){dark=d;if(!ctx)return;const t=ctx.currentTime;padLP.frequency.setTargetAtTime(d?420:700,t,.8);bedLP.frequency.setTargetAtTime(d?300:420,t,.8)}
+  const live=()=>!!ctx&&on&&ctx.state==='running';
+  return {ok:true,get on(){return on},live,night,
+    start(){if(!on)return;if(!ctx)init();clearTimeout(sleepT);ctx.resume();master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setTargetAtTime(1,ctx.currentTime,1.2)},
+    set(v){on=v;try{localStorage.setItem('nested-sound',v?'on':'off')}catch(e){}
+      if(v)this.start();else if(ctx){master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setTargetAtTime(0,ctx.currentTime,.2);clearTimeout(sleepT);sleepT=setTimeout(()=>{if(!on)ctx.suspend()},1200)}},
+    dive(d){if(!live())return;const t=ctx.currentTime;rustle(t,.035);note(pitch(d),t+.06,.06,2.2)},
+    climb(d){if(!live())return;const t=ctx.currentTime;rustle(t,.022);note(pitch(d),t+.03,.04,1.6)},
+    // a loop closes: the note, its fifth and its octave, one after another
+    loop(d){if(!live())return;const t=ctx.currentTime,b=pitch(d)>500?pitch(d)/2:pitch(d);[1,1.5,2].forEach((m,i)=>note(b*m,t+.35+i*.12,.045,3))},
+    pause(){if(ctx)ctx.suspend()},resume(){if(ctx&&on)ctx.resume()}}})();
+
 // ---- path, loops, announcements ----
 let path=['universe'],loops=0,kbd=false,started=false;
 const live=$('announce');
@@ -263,12 +315,13 @@ function settle(pre){crumbs();const w=path[path.length-1],[p,t]=D[w];say(`${pre?
   if(kbd&&(!document.activeElement||document.activeElement===document.body)){const f=rootEl.querySelector(':scope > .def > .w');if(f)f.focus({preventScroll:true})}}
 let toastT;function toast(h){const t=$('toast');t.innerHTML=h;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),3600)}
 function dive(span){const word=span.dataset.word;const r=span.getBoundingClientRect();const prev=path.indexOf(word);path.push(word);build(word);matchRect(rootEl,r);
-  if(prev>=0){loops++;const n=path.length-1-prev;toast(`↺ <b>${esc(word)}</b> again: a loop, ${n} words long. Every dictionary is a circle.`);settle(`Loop found: ${word} again, ${n} words long.`)}else settle()}
+  snd.dive(path.length-1);
+  if(prev>=0){loops++;const n=path.length-1-prev;snd.loop(path.length-1);toast(`↺ <b>${esc(word)}</b> again: a loop, ${n} words long. Every dictionary is a circle.`);settle(`Loop found: ${word} again, ${n} words long.`)}else settle()}
 let block=null;
-function climb(){if(path.length<2)return false;const child=path.pop();block=child;const r=rootEl.getBoundingClientRect();build(path[path.length-1]);const sp=rootEl.querySelector(`.def > .w[data-word="${child}"]`)||rootEl.querySelector(`.w[data-word="${child}"]`);if(sp)matchRect(sp,r);else fitRoot();settle();return true}
+function climb(){if(path.length<2)return false;const child=path.pop();block=child;const r=rootEl.getBoundingClientRect();build(path[path.length-1]);const sp=rootEl.querySelector(`.def > .w[data-word="${child}"]`)||rootEl.querySelector(`.w[data-word="${child}"]`);if(sp)matchRect(sp,r);else fitRoot();snd.climb(path.length-1);settle();return true}
 function out(){flight=null;moved();if(climb())flightTo(defEl(),DF(),false)}
-function climbTo(i){flight=null;moved();path=path.slice(0,i+1);build(path[i]);fitRoot();flightTo(defEl(),DF(),false);settle()}
-function jump(word){flight=null;moved();path=[word];build(word);fitRoot();flightTo(defEl(),DF(),false);settle()}
+function climbTo(i){flight=null;moved();if(i<path.length-1)snd.climb(i);path=path.slice(0,i+1);build(path[i]);fitRoot();flightTo(defEl(),DF(),false);settle()}
+function jump(word){flight=null;moved();snd.dive(0);path=[word];build(word);fitRoot();flightTo(defEl(),DF(),false);settle()}
 function random(){const cur=path[path.length-1],k=Object.keys(D).filter(w=>w!==cur);jump(k[Math.random()*k.length|0])}
 function moved(){started=true;document.body.classList.add('moved')}
 
@@ -319,10 +372,30 @@ addEventListener('keydown',e=>{kbd=true;if(help.open||e.ctrlKey||e.metaKey||e.al
   else if(k==='h'||k==='H')jump('universe');
   else if(k==='r'||k==='R')random();
   else if(k==='?'){e.preventDefault();help.showModal()}
+  else if(k==='n'||k==='N')$('themeBtn').click();
+  else if(k==='m'||k==='M')$('sndBtn').click();
   else if(k.startsWith('Arrow')&&!t.closest('.dock')){e.preventDefault();flight=null;moved();const d=60;if(k==='ArrowLeft')cam.x+=d;if(k==='ArrowRight')cam.x-=d;if(k==='ArrowUp')cam.y+=d;if(k==='ArrowDown')cam.y-=d;apply()}});
 // tabbing to a word that is too small to read, or off screen, brings the definition back into view
 stage.addEventListener('focusin',e=>{const w=e.target.closest&&e.target.closest('.w');if(!w||flight)return;const r=w.getBoundingClientRect();
   if(r.height<18||r.right<0||r.left>innerWidth||r.bottom<0||r.top>innerHeight)flightTo(defEl(),DF(),false)});
+
+// ---- night mode + sound controls ----
+const rootH=document.documentElement,themeBtn=$('themeBtn'),sndBtn=$('sndBtn'),metaTheme=document.querySelector('meta[name="theme-color"]');
+function setTheme(t,save,ease){if(ease&&!reduce){rootH.classList.add('theming');clearTimeout(setTheme.t);setTheme.t=setTimeout(()=>rootH.classList.remove('theming'),650)}
+  rootH.dataset.theme=t;themeBtn.setAttribute('aria-pressed',t==='dark');metaTheme.content=t==='dark'?'#131211':'#FBFAF7';snd.night(t==='dark');
+  if(save)try{localStorage.setItem('nested-theme',t)}catch(e){}}
+setTheme(rootH.dataset.theme,false,false);
+let chosen=false;
+themeBtn.onclick=()=>{chosen=true;setTheme(rootH.dataset.theme==='dark'?'light':'dark',true,true);say(rootH.dataset.theme==='dark'?'Night mode':'Day mode')};
+// with no saved choice, follow the system as it changes
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{let s=null;try{s=localStorage.getItem('nested-theme')}catch(_){}if(!s&&!chosen)setTheme(e.matches?'dark':'light',false,true)});
+if(!snd.ok)sndBtn.hidden=true;
+const syncSnd=()=>sndBtn.setAttribute('aria-pressed',snd.on);syncSnd();
+sndBtn.onclick=()=>{snd.set(!snd.live());syncSnd();say(snd.on?'Sound on':'Sound off')};
+// browsers only allow audio after a gesture, so the room tone starts on the first click, tap or key
+const wake=e=>{if(e.target.closest&&e.target.closest('#sndBtn'))return;if(e.key==='m'||e.key==='M')return;snd.start()};
+['pointerdown','pointerup','keydown'].forEach(t=>addEventListener(t,wake,true));
+document.addEventListener('visibilitychange',()=>document.hidden?snd.pause():snd.resume());
 
 // ---- dock + help ----
 $('out').onclick=out;$('rand').onclick=random;

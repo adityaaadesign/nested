@@ -4,6 +4,8 @@ An infinite dictionary. One word fills the screen, and its definition is printed
 
 **Live:** https://nested-dictionary.vercel.app
 
+It has a night mode, and a very quiet generated soundscape (room tone, a soft note on every dive, a chord when you close a loop) that starts on your first click and mutes with one button.
+
 ## Controls
 
 | Input | Action |
@@ -14,6 +16,7 @@ An infinite dictionary. One word fills the screen, and its definition is printed
 | `Esc` · `Backspace` · Out | climb back out |
 | `Tab`, then `Enter` | step between words and open one |
 | `R` · `H` · `?` | random word · back to "universe" · help |
+| `N` · `M` | night mode · sound on/off |
 
 ## Files
 
