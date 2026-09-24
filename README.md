@@ -4,7 +4,7 @@ An infinite dictionary. One word fills the screen, and its definition is printed
 
 **Live:** https://nested-dictionary.vercel.app
 
-It has a night mode, and a very quiet generated soundscape (room tone, a soft note on every dive, a chord when you close a loop) that starts on your first click and mutes with one button.
+It has a night mode, and a very quiet generated soundscape (slow distant swells, a soft note on every dive, a chord when you close a loop) that starts on your first click and mutes with one button.
 
 ## Controls
 

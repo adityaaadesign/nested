@@ -10,7 +10,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<meta name="theme-color" content="#FBFAF7">
+<meta name="theme-color" content="#F6F7F9">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Nested">
 <meta property="og:title" content="Nested — an infinite dictionary">
@@ -30,8 +30,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#FBFAF7;--ink:#141414;--ghost:#E7E3D8;--soft:#6A655A;--faint:#A39D8F;--line:#DDD8CB;--chip:#EFEBE1;--red:#D6452B;--red-ink:#B8391F;--sub:#5b574f;--nw:#4a4740;--ul:rgba(214,69,43,.6);--ul2:rgba(214,69,43,.35);--focusbg:rgba(214,69,43,.07);--kbd:#fff;--toast-hi:#FF9A83;--solid-hover:#000;--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
-:root[data-theme="dark"]{--paper:#131211;--ink:#ECE6DA;--ghost:#24221E;--soft:#9A9486;--faint:#6A655A;--line:#34312C;--chip:#23211E;--red:#E0674D;--red-ink:#F0836A;--sub:#9A9486;--nw:#D4CEC1;--ul:rgba(224,103,77,.7);--ul2:rgba(224,103,77,.4);--focusbg:rgba(240,131,106,.1);--kbd:#1C1B19;--toast-hi:#B8391F;--solid-hover:#fff;color-scheme:dark}
+:root{--paper:#F6F7F9;--ink:#15171C;--ghost:#E2E6ED;--soft:#5B6270;--faint:#98A0AD;--line:#D8DDE5;--chip:#EBEEF3;--acc:#3355D1;--acc-ink:#2B47B5;--sub:#535A66;--nw:#3F4450;--ul:rgba(51,85,209,.55);--ul2:rgba(51,85,209,.3);--focusbg:rgba(51,85,209,.08);--kbd:#fff;--toast-hi:#9DB4FF;--solid-hover:#000;--shade:rgba(20,30,60,.35);--ease:cubic-bezier(.22,1,.36,1);--pad:clamp(16px,3vw,36px);--top:clamp(14px,3vh,28px);--bot:max(clamp(14px,3vh,28px),env(safe-area-inset-bottom))}
+:root[data-theme="dark"]{--paper:#0E1014;--ink:#E4E8EF;--ghost:#1B1F27;--soft:#8E97A6;--faint:#5A6270;--line:#2A2F39;--chip:#1A1E26;--acc:#7D9BFF;--acc-ink:#9DB4FF;--sub:#8E97A6;--nw:#C7CDD7;--ul:rgba(125,155,255,.6);--ul2:rgba(125,155,255,.35);--focusbg:rgba(125,155,255,.12);--kbd:#161920;--toast-hi:#2B47B5;--solid-hover:#fff;--shade:rgba(0,0,0,.6);color-scheme:dark}
 /* switching themes: ease every colour for a moment, then get out of the way */
 .theming,.theming *{transition:background-color .5s ease,color .5s ease,border-color .5s ease,text-decoration-color .5s ease!important}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -39,7 +39,7 @@ html,body{height:100%}
 body{background:var(--paper);color:var(--ink);overflow:hidden;font-family:Chivo,system-ui,sans-serif;-webkit-font-smoothing:antialiased;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 button{font:inherit;color:inherit}
 abbr{text-decoration:none}
-:focus-visible{outline:2px solid var(--red-ink);outline-offset:3px}
+:focus-visible{outline:2px solid var(--acc-ink);outline-offset:3px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 
 /* the page: a camera over one very large word */
@@ -52,8 +52,8 @@ abbr{text-decoration:none}
 .def .hw{font-variant:small-caps;letter-spacing:.04em;font-weight:500}
 .def .pos{font-style:italic;color:var(--soft)}
 .w{position:relative;display:inline;cursor:pointer;text-decoration:underline;text-decoration-color:var(--ul);text-decoration-thickness:.05em;text-underline-offset:.14em;border-radius:.06em;transition:color .2s,background-color .2s}
-.w:hover{color:var(--red-ink)}
-.w:focus-visible{color:var(--red-ink);outline:.04em solid var(--red);outline-offset:.08em;background:var(--focusbg)}
+.w:hover{color:var(--acc-ink)}
+.w:focus-visible{color:var(--acc-ink);outline:.04em solid var(--acc);outline-offset:.08em;background:var(--focusbg)}
 .w .def{color:var(--sub);pointer-events:none}
 .w .def .w{text-decoration-color:var(--ul2)}
 .nw{color:var(--nw)}
@@ -62,20 +62,41 @@ abbr{text-decoration:none}
 .head{position:fixed;left:var(--pad);top:var(--top);pointer-events:none;z-index:5}
 .head h1{font-family:"EB Garamond",Georgia,serif;font-weight:400;font-style:italic;font-size:clamp(34px,4vw,56px);line-height:.9}
 .head p{font-size:13px;color:var(--soft);margin-top:10px;max-width:32ch;line-height:1.55}
-.chrome{position:fixed;top:var(--top);right:var(--pad);display:flex;gap:6px;z-index:8}
 .pill{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 14px;font:400 13px Chivo,sans-serif;border-radius:999px;border:1px solid var(--ink);background:var(--paper);color:var(--ink);text-decoration:none;cursor:pointer;touch-action:manipulation;transition:background .2s,color .2s}
 .pill:hover,.pill.solid{background:var(--ink);color:var(--paper)}
 .pill.solid:hover{background:var(--solid-hover)}
-.pill.icon{width:36px;padding:0;font-size:15px}
-.pill svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.ic-sun,[data-theme="dark"] .ic-moon,.snd[aria-pressed="false"] .ic-on,.snd .ic-off{display:none}
-[data-theme="dark"] .ic-sun,.snd[aria-pressed="false"] .ic-off{display:block}
-.stats{position:fixed;right:var(--pad);top:calc(var(--top) + 52px);z-index:5;text-align:right;font-size:12px;color:var(--soft);line-height:1.5;pointer-events:none}
+/* settings capsule: same language as the dock */
+.chrome{position:fixed;top:var(--top);right:var(--pad);z-index:8;display:flex;align-items:center;gap:2px;padding:4px;background:var(--paper);border:1px solid var(--line);border-radius:999px;box-shadow:0 14px 34px -20px var(--shade)}
+.ctl{flex:none;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:0;border-radius:999px;background:none;color:var(--ink);cursor:pointer;touch-action:manipulation;transition:background .2s,color .2s}
+.ctl:hover{background:var(--chip)}
+.ctl.q{font:italic 400 22px/1 "EB Garamond",Georgia,serif;padding-bottom:2px}
+/* sound: three bars that breathe while it plays, sit still before it starts, and drop and get struck through when muted */
+.bars{position:relative;display:flex;align-items:center;gap:3px;height:14px}
+.bars i{width:2.5px;height:100%;border-radius:2px;background:currentColor;transform:scaleY(.55);transition:transform .5s var(--ease)}
+.bars i:nth-child(2){transform:scaleY(.95)}.bars i:nth-child(3){transform:scaleY(.7)}
+.ctl[aria-pressed="false"] .bars i{transform:scaleY(.3)}
+.playing .bars i{animation:eq 1.7s ease-in-out infinite}
+.playing .bars i:nth-child(2){animation-duration:1.3s;animation-delay:-.6s}
+.playing .bars i:nth-child(3){animation-duration:2.1s;animation-delay:-1s}
+@keyframes eq{0%,100%{transform:scaleY(.3)}50%{transform:scaleY(1)}}
+.bars::after{content:"";position:absolute;left:-3px;right:-3px;top:50%;height:1.5px;margin-top:-.75px;border-radius:1px;background:var(--acc);transform:rotate(-38deg) scaleX(0);transition:transform .3s var(--ease)}
+.ctl[aria-pressed="false"]{color:var(--soft)}
+.ctl[aria-pressed="false"] .bars::after{transform:rotate(-38deg) scaleX(1)}
+/* night mode: a small track with a knob that carries the sun or the moon across */
+.ctl.sw{width:auto;padding:0 7px}
+.track{position:relative;width:42px;height:24px;border-radius:999px;background:var(--chip);box-shadow:inset 0 0 0 1px var(--line)}
+.knob{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;transition:transform .5s var(--ease)}
+[data-theme="dark"] .knob{transform:translateX(18px)}
+.knob svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.knob .ic-moon,[data-theme="dark"] .knob .ic-sun{display:none}
+[data-theme="dark"] .knob .ic-moon{display:block}
+.ctl.sw:hover .track{box-shadow:inset 0 0 0 1px var(--acc)}
+.stats{position:fixed;right:calc(var(--pad) + 6px);top:calc(var(--top) + 60px);z-index:5;text-align:right;font-size:12px;color:var(--soft);line-height:1.5;pointer-events:none}
 .stats b{font-family:"EB Garamond",Georgia,serif;font-size:34px;font-weight:400;color:var(--ink);display:block;line-height:1;font-variant-numeric:lining-nums}
-.stats .hit{color:var(--red-ink)}
+.stats .hit{color:var(--acc-ink)}
 
 /* the dock: out, path, random */
-.dock{position:fixed;left:50%;bottom:var(--bot);transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:2px;max-width:calc(100vw - 24px);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:0 14px 34px -20px rgba(0,0,0,.4);touch-action:manipulation}
+.dock{position:fixed;left:50%;bottom:var(--bot);transform:translateX(-50%);z-index:6;display:flex;align-items:center;gap:2px;max-width:calc(100vw - 24px);background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px;box-shadow:0 14px 34px -20px var(--shade);touch-action:manipulation}
 .tool{flex:none;display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:0;border-radius:999px;background:none;font:400 13px Chivo,sans-serif;cursor:pointer;transition:background .2s,opacity .2s}
 .tool:hover{background:var(--chip)}
 .tool:disabled{opacity:.35;cursor:default;background:none}
@@ -90,10 +111,10 @@ abbr{text-decoration:none}
 .path button{height:36px;padding:0 10px;border:0;border-radius:999px;background:none;font:400 13px Chivo,sans-serif;color:var(--soft);cursor:pointer;white-space:nowrap;transition:background .2s,color .2s}
 .path button:hover{background:var(--chip);color:var(--ink)}
 .path button[aria-current]{color:var(--ink);font-weight:700}
-.path button.loop{color:var(--red-ink)}
+.path button.loop{color:var(--acc-ink)}
 
 .coach{position:fixed;left:50%;bottom:calc(var(--bot) + 62px);transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:10px;font-size:13px;color:var(--soft);white-space:nowrap;pointer-events:none;transition:opacity .6s,transform .6s var(--ease)}
-.coach::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red);animation:pulse 1.8s ease-in-out infinite}
+.coach::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc);animation:pulse 1.8s ease-in-out infinite}
 .coach .t{display:none}
 .moved .coach{opacity:0;transform:translate(-50%,8px)}
 @keyframes pulse{50%{transform:scale(1.6);opacity:.45}}
@@ -104,7 +125,7 @@ abbr{text-decoration:none}
 
 /* help: a dictionary entry for the piece itself */
 .help{margin:auto;width:min(460px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:auto;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);padding:28px 28px 24px;box-shadow:0 30px 80px -30px rgba(0,0,0,.45);user-select:text;-webkit-user-select:text}
-.help::backdrop{background:rgba(20,20,20,.3)}
+.help::backdrop{background:rgba(14,16,20,.35)}
 .help h2{font:400 34px/1 "EB Garamond",Georgia,serif}
 .help h2 .hw{font-variant:small-caps;letter-spacing:.04em}
 .help h2 .pos{font-style:italic;color:var(--soft);font-size:26px}
@@ -117,19 +138,21 @@ abbr{text-decoration:none}
 .help .acts{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:22px}
 
 @media (max-width:700px){.def{width:17em}.head p{display:none}.toast{top:calc(var(--top) + 60px)}}
-@media (max-width:520px){.tool .lbl{display:none}.tool{padding:0 11px}.chrome{gap:4px}.pill{padding:0 12px;font-size:12px}.help{padding:22px 20px 20px}.help dl{grid-template-columns:1fr;gap:2px}.help dd{margin-bottom:8px}}
+@media (max-width:520px){.tool .lbl{display:none}.tool{padding:0 11px}.pill{padding:0 12px;font-size:12px}.help{padding:22px 20px 20px}.help dl{grid-template-columns:1fr;gap:2px}.help dd{margin-bottom:8px}}
 @media (hover:none){.coach .m{display:none}.coach .t{display:inline}}
-@media (pointer:coarse){.pill,.tool,.path button{min-height:44px;height:44px}.pill.icon{width:44px}.stats{top:calc(var(--top) + 58px)}.coach{bottom:calc(var(--bot) + 70px)}}
-@media (prefers-reduced-motion:reduce){#world,.toast,.coach{transition:none}.coach::before{animation:none}}
+@media (pointer:coarse){.pill,.tool,.path button{min-height:44px;height:44px}.ctl{width:44px;height:44px}.ctl.sw{width:auto}.stats{top:calc(var(--top) + 68px)}.coach{bottom:calc(var(--bot) + 70px)}}
+@media (prefers-reduced-motion:reduce){#world,.toast,.coach{transition:none}.coach::before,.playing .bars i{animation:none}.playing .bars i{transform:scaleY(.7)}}
 </style>
 </head>
 <body>
 <header class="head"><h1>Nested</h1><p>An infinite dictionary. Every word's definition is printed inside the word itself, in type too small to see. Keep going.</p></header>
-<nav class="chrome" aria-label="Settings">
-  <button class="pill icon snd" type="button" id="sndBtn" aria-pressed="true" aria-label="Sound" title="Sound on/off (M)"><svg class="ic-on" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 7v4h3l4 3V4L6 7H3zM12.5 6.5a3.5 3.5 0 0 1 0 5M14.5 4.5a6.4 6.4 0 0 1 0 9"/></svg><svg class="ic-off" viewBox="0 0 18 18" aria-hidden="true"><path d="M3 7v4h3l4 3V4L6 7H3zM12.5 7l4 4M16.5 7l-4 4"/></svg></button>
-  <button class="pill icon" type="button" id="helpBtn" aria-haspopup="dialog" aria-label="How to explore" title="How to explore (?)">?</button>
-  <button class="pill icon" type="button" id="themeBtn" aria-pressed="false" aria-label="Night mode" title="Night mode (N)"><svg class="ic-moon" viewBox="0 0 18 18" aria-hidden="true"><path d="M14.5 11.2A6 6 0 0 1 6.8 3.5a6 6 0 1 0 7.7 7.7z"/></svg><svg class="ic-sun" viewBox="0 0 18 18" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M9 1.8v1.6M9 14.6v1.6M1.8 9h1.6M14.6 9h1.6M3.9 3.9 5 5M13 13l1.1 1.1M3.9 14.1 5 13M13 5l1.1-1.1"/></svg></button>
-</nav>
+<div class="chrome" role="group" aria-label="Settings">
+  <button class="ctl" type="button" id="sndBtn" aria-pressed="true" aria-label="Sound" title="Sound (M)"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span></button>
+  <span class="sep" aria-hidden="true"></span>
+  <button class="ctl q" type="button" id="helpBtn" aria-haspopup="dialog" aria-label="How to explore" title="How to explore (?)">?</button>
+  <span class="sep" aria-hidden="true"></span>
+  <button class="ctl sw" type="button" id="themeBtn" role="switch" aria-checked="false" aria-label="Night mode" title="Night mode (N)"><span class="track" aria-hidden="true"><span class="knob"><svg class="ic-sun" viewBox="0 0 12 12"><circle cx="6" cy="6" r="2.2"/><path d="M6 .8v1.1M6 10.1v1.1M.8 6h1.1M10.1 6h1.1M2.3 2.3l.8.8M8.9 8.9l.8.8M2.3 9.7l.8-.8M8.9 3.1l.8-.8"/></svg><svg class="ic-moon" viewBox="0 0 12 12"><path d="M10 7.6A4.2 4.2 0 0 1 4.4 2a4.2 4.2 0 1 0 5.6 5.6z"/></svg></span></span></button>
+</div>
 <div class="stats"><b id="depth">0</b><span id="depthLbl">words deep</span><br><span id="loops">no loops yet</span></div>
 
 <main id="stage" aria-label="Dictionary" aria-describedby="how"><div id="world"></div></main>
@@ -259,11 +282,11 @@ function fitRoot(frac=.72){cam={x:0,y:0,s:1};apply();const w=rootEl.getBoundingC
 const DF=()=>Math.min(.9,(innerWidth<=700?17:30)*Math.min(30,Math.max(20,innerWidth/26))/innerWidth);
 function fitDef(){const r=defEl().getBoundingClientRect();const f=Math.min(innerWidth*DF()/r.width,innerHeight*.6/r.height);const cx=r.left+r.width/2,cy=r.top+r.height/2;cam.x=innerWidth/2-(cx-cam.x)*f;cam.y=innerHeight/2-(cy-cam.y)*f;cam.s*=f;apply()}
 
-// ---- sound: quiet room tone, a slow breathing fifth, and a soft note for every page you turn ----
+// ---- sound: slow distant swells, a breathing fifth, and a soft note for every page you turn ----
 const snd=(()=>{const AC=window.AudioContext||window.webkitAudioContext;
   let on=true;try{on=localStorage.getItem('nested-sound')!=='off'}catch(e){}
-  if(!AC)return {ok:false,on:false,start(){},set(){},live(){return false},dive(){},climb(){},loop(){},night(){},pause(){},resume(){}};
-  let ctx=null,master,wet,white,bedLP,padLP,dark=false,sleepT;
+  if(!AC)return {ok:false,on:false,watch(){},start(){},set(){},live(){return false},dive(){},climb(){},loop(){},night(){},pause(){},resume(){}};
+  let ctx=null,master,wet,white,airLP,padLP,dark=false,sleepT,airT,cb=()=>{};
   // falling through the book: each level down is one step lower on a pentatonic scale, and it wraps around like the dictionary does
   const SCALE=[880,783.99,659.25,587.33,523.25,440,392,329.63,293.66,261.63,220];
   const pitch=d=>SCALE[((d%SCALE.length)+SCALE.length)%SCALE.length];
@@ -272,8 +295,9 @@ const snd=(()=>{const AC=window.AudioContext||window.webkitAudioContext;
   function init(){ctx=new AC();master=ctx.createGain();master.gain.value=0;master.connect(ctx.destination);
     const verb=ctx.createConvolver();verb.buffer=impulse(3);wet=ctx.createGain();wet.gain.value=.5;wet.connect(verb);verb.connect(master);
     white=noise(2,false);
-    // room tone: brown noise under a low-pass, like the air in a reading room
-    const bed=ctx.createBufferSource();bed.buffer=noise(6,true);bed.loop=true;bedLP=ctx.createBiquadFilter();bedLP.type='lowpass';bedLP.frequency.value=420;const bg=ctx.createGain();bg.gain.value=.05;bed.connect(bedLP).connect(bg).connect(master);bed.start();
+    // air: no noise bed, just soft tones from the dive notes' own scale, swelling in and out a long way off
+    airLP=ctx.createBiquadFilter();airLP.type='lowpass';airLP.frequency.value=1800;airLP.connect(wet);airLP.connect(master);airT=setTimeout(swell,1200);
+    ctx.onstatechange=()=>cb();
     // a low fifth (A2 + E3), barely there, breathing once every twenty seconds
     padLP=ctx.createBiquadFilter();padLP.type='lowpass';padLP.frequency.value=700;const pad=ctx.createGain();pad.gain.value=.018;padLP.connect(pad);pad.connect(master);pad.connect(wet);
     for(const [f,dt,v] of [[110,-4,.5],[110,4,.5],[164.81,0,.45],[220,3,.2]]){const o=ctx.createOscillator(),g=ctx.createGain();o.type=f>200?'triangle':'sine';o.frequency.value=f;o.detune.value=dt;g.gain.value=v;o.connect(g).connect(padLP);o.start()}
@@ -287,11 +311,17 @@ const snd=(()=>{const AC=window.AudioContext||window.webkitAudioContext;
   function rustle(t,vol){const s=ctx.createBufferSource(),bp=ctx.createBiquadFilter(),g=ctx.createGain();s.buffer=white;bp.type='bandpass';bp.Q.value=.8;
     bp.frequency.setValueAtTime(2200,t);bp.frequency.exponentialRampToValueAtTime(650,t+.35);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(vol,t+.04);g.gain.exponentialRampToValueAtTime(.0001,t+.45);
     s.connect(bp).connect(g);g.connect(master);g.connect(wet);s.start(t,Math.random()*1.4,.5)}
-  function night(d){dark=d;if(!ctx)return;const t=ctx.currentTime;padLP.frequency.setTargetAtTime(d?420:700,t,.8);bedLP.frequency.setTargetAtTime(d?300:420,t,.8)}
+  const AIR=[440,523.25,587.33,659.25,783.99,880];
+  function swell(){airT=setTimeout(swell,5000+Math.random()*5000);if(!live())return;
+    const t=ctx.currentTime,f=AIR[Math.random()*AIR.length|0]*(dark||Math.random()<.35?.5:1),g=ctx.createGain(),pan=ctx.createStereoPanner();
+    pan.pan.value=Math.random()*1.2-.6;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.011,t+3.5);g.gain.linearRampToValueAtTime(0,t+9);g.connect(pan).connect(airLP);
+    // two sines a hair apart, so each swell shimmers slowly instead of sitting still
+    for(const m of [1,1.003]){const o=ctx.createOscillator();o.frequency.value=f*m;o.connect(g);o.start(t);o.stop(t+9.1)}}
+  function night(d){dark=d;if(!ctx)return;const t=ctx.currentTime;padLP.frequency.setTargetAtTime(d?420:700,t,.8);airLP.frequency.setTargetAtTime(d?1100:1800,t,.8)}
   const live=()=>!!ctx&&on&&ctx.state==='running';
-  return {ok:true,get on(){return on},live,night,
+  return {ok:true,get on(){return on},live,night,watch(fn){cb=fn},
     start(){if(!on)return;if(!ctx)init();clearTimeout(sleepT);ctx.resume();master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setTargetAtTime(1,ctx.currentTime,1.2)},
-    set(v){on=v;try{localStorage.setItem('nested-sound',v?'on':'off')}catch(e){}
+    set(v){on=v;cb();try{localStorage.setItem('nested-sound',v?'on':'off')}catch(e){}
       if(v)this.start();else if(ctx){master.gain.cancelScheduledValues(ctx.currentTime);master.gain.setTargetAtTime(0,ctx.currentTime,.2);clearTimeout(sleepT);sleepT=setTimeout(()=>{if(!on)ctx.suspend()},1200)}},
     dive(d){if(!live())return;const t=ctx.currentTime;rustle(t,.035);note(pitch(d),t+.06,.06,2.2)},
     climb(d){if(!live())return;const t=ctx.currentTime;rustle(t,.022);note(pitch(d),t+.03,.04,1.6)},
@@ -382,7 +412,7 @@ stage.addEventListener('focusin',e=>{const w=e.target.closest&&e.target.closest(
 // ---- night mode + sound controls ----
 const rootH=document.documentElement,themeBtn=$('themeBtn'),sndBtn=$('sndBtn'),metaTheme=document.querySelector('meta[name="theme-color"]');
 function setTheme(t,save,ease){if(ease&&!reduce){rootH.classList.add('theming');clearTimeout(setTheme.t);setTheme.t=setTimeout(()=>rootH.classList.remove('theming'),650)}
-  rootH.dataset.theme=t;themeBtn.setAttribute('aria-pressed',t==='dark');metaTheme.content=t==='dark'?'#131211':'#FBFAF7';snd.night(t==='dark');
+  rootH.dataset.theme=t;themeBtn.setAttribute('aria-checked',t==='dark');metaTheme.content=t==='dark'?'#0E1014':'#F6F7F9';snd.night(t==='dark');
   if(save)try{localStorage.setItem('nested-theme',t)}catch(e){}}
 setTheme(rootH.dataset.theme,false,false);
 let chosen=false;
@@ -390,9 +420,9 @@ themeBtn.onclick=()=>{chosen=true;setTheme(rootH.dataset.theme==='dark'?'light':
 // with no saved choice, follow the system as it changes
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{let s=null;try{s=localStorage.getItem('nested-theme')}catch(_){}if(!s&&!chosen)setTheme(e.matches?'dark':'light',false,true)});
 if(!snd.ok)sndBtn.hidden=true;
-const syncSnd=()=>sndBtn.setAttribute('aria-pressed',snd.on);syncSnd();
+const syncSnd=()=>{sndBtn.setAttribute('aria-pressed',snd.on);rootH.classList.toggle('playing',snd.live())};snd.watch(syncSnd);syncSnd();
 sndBtn.onclick=()=>{snd.set(!snd.live());syncSnd();say(snd.on?'Sound on':'Sound off')};
-// browsers only allow audio after a gesture, so the room tone starts on the first click, tap or key
+// browsers only allow audio after a gesture, so the sound starts on the first click, tap or key
 const wake=e=>{if(e.target.closest&&e.target.closest('#sndBtn'))return;if(e.key==='m'||e.key==='M')return;snd.start()};
 ['pointerdown','pointerup','keydown'].forEach(t=>addEventListener(t,wake,true));
 document.addEventListener('visibilitychange',()=>document.hidden?snd.pause():snd.resume());
